@@ -1,0 +1,26 @@
+export const CASE_FILES = [
+  {
+    caseId: 'AE-0947-CR',
+    severity: 'CRITICAL',
+    targetSystem: 'Northline Grid / SCADA Relay 04',
+    threatVector: 'Credential replay with a staged relay-control payload',
+    alias: 'NULL MERIDIAN',
+    torExitNode: '185.220.101.47 / DE-FRA',
+    cryptoWallet: 'bc1q7m2f...9v4xk8',
+    latitude: '40.7128 N',
+    longitude: '74.0060 W',
+    substation: 'Hudson East Switching Station',
+  },
+  {
+    caseId: 'AE-0952-CR',
+    severity: 'CRITICAL',
+    targetSystem: 'Civic Water Network / Pump Cluster B',
+    threatVector: 'Signed firmware tampering over a compromised vendor tunnel',
+    alias: 'GLASS VECTOR',
+    torExitNode: '171.25.193.25 / SE-STO',
+    cryptoWallet: 'bc1q4p8c...2j6wd1',
+    latitude: '41.8781 N',
+    longitude: '87.6298 W',
+    substation: 'Canal Street Power Substation',
+  },
+]

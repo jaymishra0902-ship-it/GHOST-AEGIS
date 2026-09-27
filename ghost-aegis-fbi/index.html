@@ -1,0 +1,1035 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0a0a0c" />
+    <meta name="description" content="Ghost AGIS / FBI Cyber Division case debate terminal" />
+    <title>FBI Cyber Division // Ghost AGIS AI Terminal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      :root {
+        color-scheme: dark;
+        --black: #0a0a0c;
+        --panel: #121215;
+        --panel-raised: #17171b;
+        --title: #121215;
+        --bar: #101013;
+        --white: #f4f4f5;
+        --text: #d5d5d8;
+        --muted: #85858d;
+        --dim: #5c5c64;
+        --line: #303036;
+        --line-strong: #51515a;
+        font-family: "JetBrains Mono", "Cascadia Code", Consolas, monospace;
+        background: var(--black);
+        color: var(--text);
+      }
+      * { box-sizing: border-box; }
+      body { min-width: 320px; height: 100vh; height: 100svh; margin: 0; overflow: hidden; background: var(--black); }
+      button { color: inherit; font: inherit; }
+      [hidden] { display: none !important; }
+      button:focus-visible { outline: 1px solid #fff; outline-offset: 2px; }
+      .app-shell { height: 100%; display: flex; flex-direction: column; overflow: hidden; background: var(--black); }
+      .app-shell.is-locked { opacity: .28; filter: grayscale(1); user-select: none; }
+      .titlebar { height: 39px; flex: 0 0 39px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-left: 13px; border-bottom: 1px solid #25252a; background: var(--title); }
+      .title-brand { min-width: 0; display: flex; align-items: center; gap: 10px; }
+      .brand-mark { width: 20px; height: 20px; display: grid; place-items: center; border: 1px solid #a1a1aa; border-radius: 50%; color: #f4f4f5; font: 10px/1 monospace; }
+      .title-text { overflow: hidden; color: #e9e9eb; font-size: 10px; letter-spacing: .045em; text-overflow: ellipsis; white-space: nowrap; }
+      .clearance-badge { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 7px; padding: 4px 8px; border: 1px solid #5a5a63; color: #e3e3e6; font-size: 8px; letter-spacing: .035em; white-space: nowrap; }
+      .clearance-badge i { width: 5px; height: 5px; border-radius: 50%; background: #d4d4d8; box-shadow: 0 0 5px #ffffff77; }
+      .window-controls { height: 100%; display: flex; flex: 0 0 auto; }
+      .window-control { width: 41px; display: grid; place-items: center; border: 0; background: transparent; color: #b5b5bc; cursor: pointer; }
+      .window-control svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.2; }
+      .window-control:hover { background: #27272b; color: #fff; }.window-control--close:hover { background: #3c3c42; }
+      .shell-body { min-height: 0; flex: 1; position: relative; display: flex; }
+      .app-shell.is-minimized .shell-body { display: none; }
+      .app-shell.is-minimized::after { content: "WORKSPACE MINIMIZED / USE THE TITLE BAR RESTORE CONTROL"; flex: 1; display: grid; place-items: center; color: #8e8e96; font-size: 9px; letter-spacing: .08em; }
+      .app-shell.is-windowed { height: calc(100% - 32px); margin: 16px; border: 1px solid #45454c; box-shadow: 0 12px 55px #000b; }
+      .activitybar { width: 47px; flex: 0 0 47px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 7px 0; border-right: 1px solid #202024; background: #101013; }
+      .activity-group { display: flex; flex-direction: column; gap: 5px; }
+      .activity-icon { position: relative; width: 46px; height: 42px; display: grid; place-items: center; border: 0; background: transparent; color: #777780; cursor: pointer; }
+      .activity-icon svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+      .activity-icon:hover, .activity-icon[aria-pressed="true"] { color: #f0f0f2; }
+      .activity-icon[aria-pressed="true"]::before { content: ""; position: absolute; inset: 5px auto 5px 0; width: 2px; background: #e5e5e7; }
+      .activity-icon--agent { color: #a8a8b0; }
+      .activity-icon--agent::after { content: ""; position: absolute; inset: 7px; border: 1px solid #a1a1aa55; border-radius: 50%; box-shadow: 0 0 8px #d4d4d833; }
+      .activity-drawer { width: 248px; position: absolute; z-index: 8; inset: 0 auto 0 47px; display: flex; flex-direction: column; border-right: 1px solid #414148; background: #121215; box-shadow: 12px 0 30px #0008; }
+      .activity-drawer[hidden] { display: none; }
+      .drawer-head { min-height: 35px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border-bottom: 1px solid #36363c; color: #d7d7db; font-size: 8px; letter-spacing: .07em; }
+      .drawer-close { width: 24px; height: 24px; display: grid; place-items: center; border: 0; background: transparent; color: #a3a3aa; cursor: pointer; }
+      .drawer-close:hover { background: #2b2b30; color: #fff; }
+      .drawer-close svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 1.4; }
+      .drawer-content { min-height: 0; flex: 1; overflow: auto; padding: 10px; }
+      .drawer-file { display: flex; align-items: center; gap: 8px; padding: 8px; border-bottom: 1px solid #29292e; color: #c4c4ca; font-size: 8px; }
+      .drawer-file small { margin-left: auto; color: #777780; font-size: 7px; }
+      .drawer-search-action { width: 100%; margin-top: 9px; padding: 8px; border: 1px solid #55555d; background: #202024; color: #dedee2; text-align: left; cursor: pointer; font-size: 8px; }
+      .drawer-search-action:hover { background: #2b2b30; }
+      .drawer-search-action svg { width: 12px; height: 12px; margin-right: 6px; vertical-align: -3px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+      .drawer-agent { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 9px 3px; border-bottom: 1px solid #2a2a30; color: #d5d5d9; font-size: 8px; }
+      .drawer-agent span:last-child { color: #9999a1; font-size: 7px; }
+      .drawer-audit { padding: 9px 2px; border-bottom: 1px solid #2a2a30; color: #d5d5d9; font-size: 8px; line-height: 1.7; overflow-wrap: anywhere; }
+      .drawer-audit small { display: block; color: #8e8e96; font-size: 7px; }
+      .workspace { min-width: 0; min-height: 0; flex: 1; display: flex; flex-direction: column; }
+      .workspace-topline { height: 32px; flex: 0 0 32px; display: flex; align-items: center; justify-content: space-between; padding: 0 13px; border-bottom: 1px solid #242429; background: #111114; color: #8f8f97; font-size: 8px; }
+      .workspace-path { display: flex; align-items: center; gap: 7px; overflow: hidden; white-space: nowrap; }
+      .workspace-path strong { color: #d2d2d7; font-weight: 400; }
+      .debate-search { width: min(270px, 24vw); min-width: 130px; height: 22px; display: flex; align-items: center; gap: 6px; padding: 0 7px; border: 1px solid #35353b; background: #0b0b0e; }
+      .debate-search svg { width: 12px; height: 12px; flex: 0 0 auto; fill: none; stroke: #888890; stroke-width: 1.5; }
+      .debate-search input { width: 100%; min-width: 0; border: 0; outline: 0; background: transparent; color: #eee; font: 8px Consolas, monospace; }
+      .debate-search input::placeholder { color: #777780; }
+      .debate-search input:focus-visible { outline: 0; }
+      .search-count { min-width: 24px; color: #8b8b92; font: 7px Consolas, monospace; text-align: right; }
+      .workspace-top-actions { display: flex; align-items: center; gap: 12px; color: #777780; }
+      .workspace-top-actions span { display: inline-flex; align-items: center; gap: 4px; }
+      .workspace-top-actions svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 1.4; }
+      .main-scroll { min-height: 0; flex: 1; position: relative; overflow: auto; isolation: isolate; }
+      .watermark { width: min(580px, 75vw); position: absolute; z-index: -1; top: 50%; left: 50%; color: #fff; opacity: .04; pointer-events: none; transform: translate(-50%, -52%); }
+      .watermark svg { width: 100%; height: auto; display: block; }
+      .dashboard-content { width: min(1500px, 100%); min-height: 100%; position: relative; z-index: 1; margin: 0 auto; padding: 20px clamp(15px, 2.2vw, 31px) 16px; display: flex; flex-direction: column; gap: 13px; }
+      .case-banner { min-height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 15px; padding: 13px 17px; border: 1px solid #393940; background: #121215ed; }
+      .case-kicker { margin-bottom: 7px; color: #85858d; font-size: 8px; letter-spacing: .08em; }
+      .case-heading { display: flex; flex-wrap: wrap; align-items: baseline; gap: 7px 12px; }
+      .case-id { color: #f2f2f4; font-size: 10px; font-weight: 700; white-space: nowrap; }
+      .case-title { color: #c4c4c9; font-size: 10px; }
+      .case-context { margin-top: 7px; color: #777780; font-size: 8px; }
+      .force-button { min-height: 34px; flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 0 11px; border: 1px solid #707078; background: #202024; color: #f1f1f3; cursor: pointer; font-size: 8px; letter-spacing: .03em; transition: background .15s, border-color .15s; }
+      .force-button:hover { border-color: #c7c7cc; background: #2b2b30; }
+      .force-button svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+      .victim-panel { display: grid; grid-template-columns: minmax(0, 1fr) minmax(235px, auto); gap: 10px 18px; align-items: center; padding: 11px 15px; border: 1px solid #46464e; background: #121215ed; }
+      .victim-label, .impact-label, .raw-evidence > span { color: #8d8d95; font-size: 7px; letter-spacing: .075em; }
+      .target-entity { margin-top: 7px; color: #bcbcc2; font-size: 9px; }
+      .target-entity strong { color: #f0f0f2; font-size: 10px; font-weight: 500; }
+      .victim-impact { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding-left: 15px; border-left: 1px solid #424249; }
+      .victim-impact strong { color: #f1f1f3; font-size: 9px; font-weight: 600; }
+      .victim-impact small { color: #9b9ba2; font-size: 7px; }
+      .raw-evidence { min-width: 0; grid-column: 1 / -1; display: flex; align-items: baseline; gap: 9px; padding-top: 8px; border-top: 1px solid #323238; }
+      .raw-evidence code { min-width: 0; color: #d3d3d7; font: 8px/1.5 "JetBrains Mono", Consolas, monospace; overflow-wrap: anywhere; }
+      .evidence-panel { min-height: 0; border: 1px solid #393940; background: #121215ed; }
+      .evidence-header { min-height: 30px; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 0 12px; border-bottom: 1px solid #35353b; color: #d7d7db; font-size: 8px; letter-spacing: .06em; }
+      .evidence-header small { color: #82828a; font-size: 7px; }
+      .evidence-canvas-wrap { height: 142px; position: relative; overflow: hidden; background: #0b0b0e; }
+      .cctv-video { position: absolute; inset: 0; overflow: hidden; background-color: #0b0b0e; background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px), radial-gradient(ellipse at 50% 55%, #25252a 0, #121215 34%, #09090b 75%); background-size: 24px 24px, 24px 24px, 100% 100%; }
+      .cctv-video::before { content: ""; position: absolute; z-index: 2; inset: 0; pointer-events: none; background: repeating-linear-gradient(to bottom, transparent 0, transparent 3px, rgba(255,255,255,.075) 4px, transparent 5px); opacity: .52; }
+      .cctv-video::after { content: ""; position: absolute; z-index: 3; inset: -30%; pointer-events: none; opacity: .08; background-image: repeating-radial-gradient(circle at 20% 30%, #fff 0 1px, transparent 1px 4px), repeating-linear-gradient(83deg, transparent 0 8px, #fff 9px, transparent 10px 17px); background-size: 37px 31px, 100% 100%; mix-blend-mode: screen; animation: video-noise .22s steps(3, end) infinite; }
+      .video-radar { width: min(190px, 24%); aspect-ratio: 1; position: absolute; top: 50%; left: 50%; border: 1px solid #d7d7dc66; border-radius: 50%; transform: translate(-50%, -50%); background: repeating-radial-gradient(circle, transparent 0 19%, #ffffff15 19.5% 20%, transparent 20.5% 39.5%); }
+      .video-radar::before, .video-radar::after { content: ""; position: absolute; background: #ffffff45; }
+      .video-radar::before { width: 1px; top: 0; bottom: 0; left: 50%; }.video-radar::after { height: 1px; right: 0; left: 0; top: 50%; }
+      .video-sweep { width: 48%; height: 1px; position: absolute; z-index: 1; top: 50%; left: 50%; transform-origin: left center; background: linear-gradient(90deg, #f3f3f5aa, transparent); box-shadow: 0 0 8px #fff5; animation: video-sweep 4s linear infinite; }
+      .video-scanbar { height: 2px; position: absolute; z-index: 2; right: 0; left: 0; background: #eeeeef66; box-shadow: 0 0 6px #fff5; animation: video-scan 3.2s linear infinite; }
+      .video-target { width: 34px; height: 25px; position: absolute; z-index: 1; top: 53%; left: 58%; border: 1px solid #e9e9edaa; transform: translate(-50%, -50%); }
+      .video-target::before, .video-target::after { content: ""; position: absolute; width: 6px; height: 6px; border-color: #f4f4f5; border-style: solid; }
+      .video-target::before { top: -2px; left: -2px; border-width: 1px 0 0 1px; }.video-target::after { right: -2px; bottom: -2px; border-width: 0 1px 1px 0; }
+      .video-rec { position: absolute; z-index: 4; top: 9px; right: 11px; display: flex; align-items: center; gap: 5px; color: #e9e9ec; font: 7px Consolas, monospace; letter-spacing: .08em; }
+      .video-rec i { width: 5px; height: 5px; border-radius: 50%; background: #e5e5e9; animation: rec-blink .85s steps(2, start) infinite; }
+      .video-vignette { position: absolute; z-index: 2; inset: 0; pointer-events: none; box-shadow: inset 0 0 48px 14px #000b; }
+      .evidence-canvas { width: 100%; height: 100%; position: absolute; z-index: 1; inset: 0; display: block; pointer-events: none; }
+      .cctv-video.is-reset .video-sweep, .cctv-video.is-reset .video-scanbar, .cctv-video.is-reset::after { animation: none; }
+      .cctv-video.is-reset::after { opacity: .35; }
+      .canvas-readout { position: absolute; top: 9px; left: 11px; color: #b9b9bf; font: 7px Consolas, monospace; letter-spacing: .06em; pointer-events: none; }
+      .canvas-coordinate { position: absolute; right: 11px; bottom: 8px; color: #85858d; font: 7px Consolas, monospace; pointer-events: none; }
+      .dossier-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; gap: 12px; padding: 12px 18px; border-left: 1px solid #a6a6ad; background: #0a0a0cf0; animation: dossier-in .45s ease-out both; }
+      .dossier-heading { color: #f5f5f6; font-size: 9px; font-weight: 700; letter-spacing: .11em; }
+      .dossier-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 13px; }
+      .dossier-field { min-width: 0; display: flex; flex-direction: column; gap: 5px; }
+      .dossier-field span { color: #8b8b92; font-size: 6px; letter-spacing: .08em; }
+      .dossier-field strong { color: #f0f0f2; font-size: 9px; font-weight: 500; overflow-wrap: anywhere; }
+      .debate-stage { min-height: 0; flex: 1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 13px; }
+      .agent-panel { min-width: 0; min-height: 320px; display: flex; flex-direction: column; border: 1px solid #686870; background: #121215ee; }
+      .agent-panel--black { border-color: #45454c; }
+      .agent-header { min-height: 53px; flex: 0 0 53px; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 0 15px; border-bottom: 1px solid #414148; background: #17171b; }
+      .agent-panel--white .agent-header { border-bottom-color: #65656c; }
+      .agent-title-wrap { min-width: 0; display: flex; align-items: center; gap: 10px; }
+      .agent-seal { width: 23px; height: 23px; flex: 0 0 auto; display: grid; place-items: center; border: 1px solid #dbdbdf; border-radius: 50%; color: #f5f5f6; font-size: 8px; }
+      .agent-panel--black .agent-seal { border-color: #777780; color: #c1c1c7; }
+      .agent-title { overflow: hidden; color: #f3f3f5; font-size: 9px; font-weight: 600; letter-spacing: .035em; text-overflow: ellipsis; white-space: nowrap; }
+      .agent-subtitle { margin-top: 4px; color: #8b8b93; font-size: 7px; letter-spacing: .045em; }
+      .agent-live { display: inline-flex; flex: 0 0 auto; align-items: center; gap: 6px; color: #a3a3aa; font-size: 7px; }
+      .agent-live i { width: 5px; height: 5px; border: 1px solid #d9d9dd; border-radius: 50%; background: #bdbdc3; animation: pulse 1.8s ease-in-out infinite; }
+      .agent-panel--black .agent-live i { background: #777780; border-color: #a1a1aa; }
+      .agent-feed { min-height: 0; flex: 1; overflow: auto; padding: 13px 15px 16px; scrollbar-color: #494950 #121215; scrollbar-width: thin; }
+      .feed-empty { min-height: 165px; display: flex; flex-direction: column; justify-content: center; gap: 9px; color: #777780; font-size: 8px; line-height: 1.65; }
+      .feed-empty strong { color: #b9b9bf; font-size: 8px; font-weight: 500; }
+      .argument-entry { padding: 0 0 13px; margin: 0 0 13px; border-bottom: 1px solid #2d2d33; animation: entry-in .28s ease-out both; }
+      .argument-entry:last-child { margin-bottom: 0; }
+      .argument-entry.search-dimmed { opacity: .17; }
+      .argument-entry.search-hit { border-left: 2px solid #dedee2; padding-left: 8px; background: #ffffff09; }
+      .argument-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; color: #777780; font-size: 7px; letter-spacing: .055em; }
+      .argument-number { color: #b8b8be; }
+      .argument-body { margin: 0; color: #ededf0; font-size: 9px; line-height: 1.75; white-space: pre-wrap; overflow-wrap: anywhere; }
+      .agent-panel--black .argument-body { color: #c9c9ce; }
+      .typing-caret { display: inline-block; width: 5px; height: 10px; margin-left: 3px; vertical-align: -1px; background: #d7d7dc; animation: caret .8s steps(2, start) infinite; }
+      .consensus-panel { min-height: 82px; padding: 12px 16px 10px; border: 1px solid #35353b; background: #121215ee; }
+      .consensus-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+      .consensus-label { color: #a6a6ad; font-size: 8px; letter-spacing: .07em; }
+      .system-state { display: inline-flex; align-items: center; gap: 7px; color: #d1d1d5; font-size: 8px; }
+      .system-state i { width: 5px; height: 5px; border: 1px solid #d8d8dc; border-radius: 50%; animation: pulse 1.4s ease-in-out infinite; }
+      .balance-row { display: grid; grid-template-columns: 100px minmax(0, 1fr) 100px; align-items: center; gap: 12px; margin-top: 12px; }
+      .balance-caption { color: #92929a; font-size: 7px; white-space: nowrap; }.balance-caption:last-child { text-align: right; }
+      .balance-track { height: 5px; position: relative; background: #303036; }
+      .balance-mid { width: 1px; height: 9px; position: absolute; top: -2px; left: 50%; background: #777780; }
+      .balance-marker { width: 3px; height: 13px; position: absolute; top: -4px; left: 50%; background: #f4f4f5; box-shadow: 0 0 5px #ffffff55; transition: left .5s ease; }
+      .case-progress { height: 2px; margin-top: 11px; background: #27272c; }
+      .case-progress-fill { width: 0; height: 100%; background: #d4d4d8; transition: width .3s linear; }
+      .statusbar { min-height: 24px; flex: 0 0 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 10px; border-top: 1px solid #2b2b30; background: #111114; color: #a8a8af; font-size: 8px; }
+      .status-left, .status-right { min-width: 0; display: flex; align-items: center; gap: 15px; white-space: nowrap; }
+      .status-item { display: inline-flex; align-items: center; gap: 5px; }
+      .status-item svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+      .countdown-status { color: #f0f0f2; font-variant-numeric: tabular-nums; }
+      .lock-button { min-height: 18px; display: inline-flex; align-items: center; gap: 4px; padding: 0 6px; border: 1px solid #777780; background: #1b1b20; color: #e2e2e6; cursor: pointer; font: inherit; font-size: 7px; letter-spacing: .04em; }
+      .lock-button:hover { background: #303036; color: #fff; }
+      .lock-button svg { width: 10px; height: 10px; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+      .gateway { position: fixed; z-index: 20; inset: 0; display: grid; place-items: center; overflow-y: auto; padding: 22px; background: #08080aeF; opacity: 1; transition: opacity .45s ease; }
+      .gateway.is-leaving { opacity: 0; pointer-events: none; }
+      .gateway-card { width: min(470px, 100%); border: 1px solid #55555d; background: #111114; box-shadow: 0 24px 100px #000b; animation: entry-in .35s ease-out both; }
+      .gateway-top { min-height: 36px; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 0 13px; border-bottom: 1px solid #3c3c42; background: #17171b; color: #adadb4; font-size: 7px; letter-spacing: .08em; }
+      .gateway-top span:first-child { display: flex; align-items: center; gap: 7px; }
+      .gateway-top i { width: 5px; height: 5px; border: 1px solid #c6c6cb; border-radius: 50%; }
+      .gateway-body { padding: 25px clamp(19px, 6vw, 34px) 21px; }
+      .gateway-seal { width: 76px; height: 76px; display: grid; place-items: center; margin: 0 auto 20px; border: 1px solid #b9b9c0; border-radius: 50%; color: #efeff1; animation: seal-rotate 16s linear infinite; }
+      .gateway-seal svg { width: 56px; height: 56px; fill: none; stroke: currentColor; stroke-width: 1.25; stroke-linecap: round; stroke-linejoin: round; }
+      .gateway-title { margin: 0; color: #f2f2f4; font-size: 12px; line-height: 1.7; font-weight: 600; letter-spacing: .065em; text-align: center; }
+      .gateway-clearance { margin: 9px 0 20px; color: #9d9da5; font-size: 8px; letter-spacing: .1em; text-align: center; }
+      .gateway-clearance strong { color: #e4e4e7; font-weight: 500; }
+      .gateway-rule { height: 1px; margin: 0 0 18px; background: #39393f; }
+      .gateway-label { display: block; margin: 0 0 6px; color: #c2c2c8; font-size: 8px; letter-spacing: .06em; }
+      .gateway-input { width: 100%; height: 37px; margin-bottom: 14px; padding: 0 10px; border: 1px solid #505058; border-radius: 0; outline: none; background: #0b0b0e; color: #f1f1f3; font: 10px Consolas, monospace; }
+      .gateway-input::placeholder { color: #62626a; }.gateway-input:focus { border-color: #d0d0d4; box-shadow: 0 0 0 1px #d0d0d433; }
+      .gateway-options { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 16px; }
+      .biometric-toggle { display: inline-flex; align-items: center; gap: 8px; color: #c0c0c5; font-size: 8px; cursor: pointer; }
+      .biometric-toggle input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+      .toggle-track { width: 27px; height: 14px; position: relative; border: 1px solid #696971; border-radius: 8px; background: #242429; transition: background .15s; }
+      .toggle-track::after { content: ""; width: 8px; height: 8px; position: absolute; top: 2px; left: 2px; border-radius: 50%; background: #b0b0b7; transition: transform .15s, background .15s; }
+      .biometric-toggle input:checked + .toggle-track { background: #52525a; }.biometric-toggle input:checked + .toggle-track::after { transform: translateX(13px); background: #fff; }
+      .biometric-toggle input:focus-visible + .toggle-track { outline: 1px solid #fff; outline-offset: 2px; }
+      .gateway-local-note { color: #71717a; font-size: 7px; text-align: right; }
+      .gateway-submit { width: 100%; min-height: 38px; display: flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid #bdbdc3; background: #e4e4e7; color: #111114; cursor: pointer; font-size: 9px; font-weight: 700; letter-spacing: .1em; }
+      .gateway-submit:hover { background: #fff; }.gateway-submit:disabled { opacity: .65; cursor: wait; }
+      .gateway-submit svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+      .gateway-error { min-height: 17px; margin: 8px 0 0; color: #f1f1f3; font-size: 8px; letter-spacing: .04em; text-align: center; }
+      .gateway-error.is-denied { color: #fff; font-weight: 700; animation: denied-flash .22s steps(2, start) 4; }
+      .gateway-decrypt { min-height: 78px; margin-top: 10px; padding: 10px; border: 1px solid #3a3a40; background: #0b0b0e; color: #ceced3; font: 8px/1.8 Consolas, monospace; }
+      .gateway-decrypt-line { display: flex; align-items: center; gap: 7px; }
+      .gateway-decrypt-line i { width: 5px; height: 5px; border-radius: 50%; background: #73737b; }
+      .gateway-decrypt-line.is-active i { background: #e8e8eb; animation: pulse .7s ease-in-out infinite; }
+      .gateway-decrypt-line.is-complete i { background: #d8d8dc; }
+      .gateway-bottom { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 17px; padding-top: 12px; border-top: 1px solid #38383e; }
+      .gateway-demo { padding: 4px 0; border: 0; background: transparent; color: #b5b5bc; cursor: pointer; font-size: 7px; letter-spacing: .04em; text-decoration: underline; text-underline-offset: 3px; }
+      .gateway-demo:hover { color: #fff; }
+      .gateway-footnote { color: #696971; font-size: 6px; text-align: right; }
+      @keyframes seal-rotate { to { transform: rotate(360deg); } }
+      @keyframes denied-flash { 50% { color: #777; background: #e8e8eb; } }
+      .toast { position: fixed; z-index: 5; right: 16px; bottom: 37px; max-width: min(380px, calc(100vw - 72px)); padding: 10px 13px; border: 1px solid #56565e; background: #18181c; color: #e6e6e9; font-size: 8px; box-shadow: 0 7px 20px #0009; animation: entry-in .2s ease-out both; }
+      @keyframes pulse { 50% { opacity: .4; } }
+      @keyframes caret { 50% { opacity: 0; } }
+      @keyframes entry-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+      @keyframes dossier-in { from { opacity: 0; } to { opacity: 1; } }
+      @keyframes video-sweep { to { transform: rotate(360deg); } }
+      @keyframes video-scan { from { top: -2px; } to { top: calc(100% + 2px); } }
+      @keyframes video-noise { 0% { transform: translate(0, 0); } 33% { transform: translate(2%, -1%); } 66% { transform: translate(-1%, 2%); } 100% { transform: translate(1%, 1%); } }
+      @keyframes rec-blink { 50% { opacity: .22; } }
+      @media (max-width: 940px) {
+        .dashboard-content { padding: 14px; gap: 10px; }
+        .debate-stage { gap: 10px; }.agent-panel { min-height: 280px; }
+        .agent-header { padding: 0 10px; }.agent-feed { padding: 11px 10px; }
+        .status-left, .status-right { gap: 9px; }
+      }
+      @media (max-width: 680px) {
+        .titlebar { height: 36px; flex-basis: 36px; gap: 5px; padding-left: 8px; }
+        .title-text { max-width: 48vw; font-size: 7px; }.brand-mark { width: 17px; height: 17px; font-size: 8px; }
+        .title-brand { gap: 6px; }.clearance-badge { gap: 4px; padding: 3px 5px; font-size: 6px; }.clearance-badge i { width: 4px; height: 4px; }
+        .window-control { width: 25px; }.window-control svg { width: 10px; height: 10px; }
+        .activitybar { width: 39px; flex-basis: 39px; }.activity-icon { width: 38px; height: 38px; }.activity-icon svg { width: 17px; height: 17px; }
+        .workspace-topline { height: 30px; flex-basis: 30px; gap: 7px; padding: 0 7px; font-size: 6px; }.workspace-path { max-width: 30vw; gap: 4px; }.workspace-top-actions span:nth-child(2) { display: none; }.debate-search { width: min(185px, 37vw); min-width: 84px; height: 20px; gap: 4px; padding: 0 5px; }.debate-search input { font-size: 7px; }.search-count { min-width: 17px; font-size: 6px; }
+        .dashboard-content { padding: 9px 8px 10px; gap: 8px; }
+        .case-banner { min-height: 74px; align-items: flex-start; padding: 10px; gap: 6px; }.case-kicker { margin-bottom: 5px; font-size: 7px; }.case-heading { gap: 4px 7px; }.case-id, .case-title { font-size: 8px; }.case-context { max-width: 52vw; font-size: 6px; line-height: 1.4; }
+        .force-button { min-height: 30px; gap: 4px; padding: 0 6px; font-size: 6px; }.force-button svg { width: 12px; height: 12px; }
+        .victim-panel { grid-template-columns: minmax(0, 1fr) auto; gap: 7px 8px; padding: 8px; }.victim-label, .impact-label, .raw-evidence > span { font-size: 6px; }.target-entity { max-width: 52vw; margin-top: 5px; font-size: 7px; line-height: 1.5; }.target-entity strong { font-size: 7px; }.victim-impact { max-width: 126px; padding-left: 8px; }.victim-impact strong { font-size: 7px; }.victim-impact small { font-size: 6px; }.raw-evidence { gap: 5px; padding-top: 6px; }.raw-evidence code { font-size: 6px; }
+        .evidence-header { min-height: 26px; padding: 0 8px; font-size: 6px; }.evidence-header small { font-size: 6px; }.evidence-canvas-wrap { height: 116px; }.canvas-readout, .canvas-coordinate { font-size: 6px; }.dossier-overlay { gap: 8px; padding: 8px; }.dossier-heading { font-size: 7px; }.dossier-grid { gap: 5px; }.dossier-field { gap: 4px; }.dossier-field span { font-size: 5px; }.dossier-field strong { font-size: 6px; }
+        .debate-stage { flex: 1; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); gap: 7px; }
+        .agent-panel { min-height: 160px; }.agent-header { min-height: 42px; flex-basis: 42px; gap: 5px; padding: 0 8px; }.agent-title-wrap { gap: 6px; }.agent-seal { width: 19px; height: 19px; font-size: 7px; }.agent-title { font-size: 7px; }.agent-subtitle { font-size: 6px; }.agent-live { font-size: 6px; gap: 4px; }
+        .agent-feed { padding: 8px; }.feed-empty { min-height: 75px; font-size: 7px; }.argument-entry { padding-bottom: 8px; margin-bottom: 8px; }.argument-meta { margin-bottom: 5px; font-size: 6px; }.argument-body { font-size: 7px; line-height: 1.55; }
+        .consensus-panel { min-height: 70px; padding: 8px 9px; }.consensus-label, .system-state { font-size: 6px; }.balance-row { grid-template-columns: 78px minmax(0, 1fr) 88px; gap: 7px; margin-top: 9px; }.balance-caption { font-size: 6px; }.case-progress { margin-top: 8px; }
+        .statusbar { min-height: 23px; flex-basis: 23px; gap: 5px; padding: 0 6px; font-size: 6px; }.status-left, .status-right { gap: 6px; }.status-hide-mobile { display: none; }.status-item { gap: 3px; }.status-item svg { width: 10px; height: 10px; }.countdown-status { font-size: 6px; }.lock-button { min-height: 16px; padding: 0 4px; font-size: 5px; }.lock-button svg { width: 8px; height: 8px; }
+      }
+      @media (max-width: 380px) {
+        .title-text { max-width: 42vw; }.clearance-badge { max-width: 105px; overflow: hidden; text-overflow: ellipsis; }
+        .activitybar { width: 34px; flex-basis: 34px; }.activity-icon { width: 33px; }
+        .case-banner { flex-direction: column; }.case-context { max-width: none; }.force-button { align-self: flex-end; }
+        .agent-title { max-width: 165px; }.balance-row { grid-template-columns: 68px minmax(0, 1fr) 78px; gap: 5px; }
+      }
+      @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; } }
+    </style>
+  </head>
+  <body>
+    <div class="app-shell is-locked" id="app-shell" inert>
+      <header class="titlebar">
+        <div class="title-brand">
+          <span class="brand-mark" aria-hidden="true">GA</span>
+          <span class="title-text">FBI CYBER DIVISION // GHOST AGIS AI TERMINAL</span>
+          <span class="clearance-badge"><i></i> SECURITY CLEARANCE: LEVEL 5</span>
+        </div>
+        <div class="window-controls" aria-label="Window controls">
+          <button class="window-control" type="button" aria-label="Minimize" data-window-action="minimize"><svg viewBox="0 0 16 16"><path d="M3 8h10" /></svg></button>
+          <button class="window-control" type="button" aria-label="Maximize" data-window-action="maximize"><svg viewBox="0 0 16 16"><rect x="3.5" y="3.5" width="9" height="9" /></svg></button>
+          <button class="window-control window-control--close" type="button" aria-label="Close and lock terminal" data-window-action="close"><svg viewBox="0 0 16 16"><path d="m4 4 8 8M12 4l-8 8" /></svg></button>
+        </div>
+      </header>
+
+      <div class="shell-body">
+        <nav class="activitybar" aria-label="VS Code activity bar">
+          <div class="activity-group">
+            <button class="activity-icon" type="button" aria-label="Files" aria-pressed="false" data-drawer="files"><svg viewBox="0 0 24 24"><path d="M4 5.5h6l2 2h8v11H4z"/><path d="M4 7.5V4h6l2 2"/></svg></button>
+            <button class="activity-icon" type="button" aria-label="Search" aria-pressed="false" data-drawer="search"><svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.3"/><path d="m15.5 15.5 4.2 4.2"/></svg></button>
+            <button class="activity-icon" type="button" aria-label="Agents" aria-pressed="false" data-drawer="agents"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0M16 5.5a3 3 0 0 1 0 5.8M17 14a4.5 4.5 0 0 1 3.5 4.4"/></svg></button>
+            <button class="activity-icon" type="button" aria-label="Security Audit" aria-pressed="false" data-drawer="audit"><svg viewBox="0 0 24 24"><path d="M12 3 19 6v5c0 4.5-2.8 7.7-7 10-4.2-2.3-7-5.5-7-10V6z"/><path d="m9 12 2 2 4-4"/></svg></button>
+            <button class="activity-icon" type="button" aria-label="Case Evidence" aria-pressed="false" data-drawer="files"><svg viewBox="0 0 24 24"><path d="M4 5.5h6l2 2h8v11H4z"/><path d="M8 12h8M8 15h6"/></svg></button>
+          </div>
+          <div class="activity-group">
+            <button class="activity-icon activity-icon--agent" type="button" aria-label="Ghost AGIS system status"><svg viewBox="0 0 24 24"><path d="M8 8h8a3 3 0 0 1 3 3v5a3 3 0 0 1-3 3h-1l-3 2-3-2H8a3 3 0 0 1-3-3v-5a3 3 0 0 1 3-3Z"/><path d="M9 13h.01M15 13h.01M9 16h6M12 8V5m-2 0h4"/></svg></button>
+          </div>
+        </nav>
+
+        <aside class="activity-drawer" id="activity-drawer" aria-label="Activity panel" hidden>
+          <div class="drawer-head"><span id="drawer-title">CASE FILES</span><button class="drawer-close" id="drawer-close" type="button" aria-label="Close activity panel"><svg viewBox="0 0 16 16"><path d="m4 4 8 8M12 4l-8 8"/></svg></button></div>
+          <div class="drawer-content" data-drawer-view="files">
+            <div class="drawer-file"><span>CASE_FILE</span><strong id="drawer-case-id">9021</strong><small>ACTIVE</small></div>
+            <div class="drawer-file"><span>TARGET</span><strong id="drawer-target">NODE 409-B</strong></div>
+            <div class="drawer-file"><span>EVIDENCE</span><strong id="drawer-file-evidence">raw_extract.log</strong></div>
+            <button class="drawer-search-action" type="button" data-focus-search><svg viewBox="0 0 16 16"><circle cx="6.8" cy="6.8" r="4.5"/><path d="m10 10 3.5 3.5"/></svg>Filter case arguments</button>
+          </div>
+          <div class="drawer-content" data-drawer-view="search" hidden>
+            <div class="drawer-file"><span>LIVE ARGUMENT FILTER</span></div>
+            <p class="gateway-local-note">Search matches both agent feeds immediately.</p>
+            <button class="drawer-search-action" type="button" data-focus-search><svg viewBox="0 0 16 16"><circle cx="6.8" cy="6.8" r="4.5"/><path d="m10 10 3.5 3.5"/></svg>Focus top search field</button>
+          </div>
+          <div class="drawer-content" data-drawer-view="agents" hidden>
+            <div class="drawer-agent"><span>WHITE AGENT / PROSECUTION</span><span>LIVE</span></div>
+            <div class="drawer-agent"><span>BLACK AGENT / DEFENSE</span><span>LIVE</span></div>
+            <div class="drawer-agent"><span>DEBATE ROUND</span><span id="drawer-round">00</span></div>
+            <div class="drawer-agent"><span>ARGUMENT BALANCE</span><span id="drawer-balance">50 / 50</span></div>
+          </div>
+          <div class="drawer-content" data-drawer-view="audit" hidden>
+            <div class="drawer-audit"><small>COLLATERAL RISK / LIVES AT RISK</small><span id="drawer-risk">CRITICAL (92%) / 4,500</span></div>
+            <div class="drawer-audit"><small>RAW EVIDENCE HASH / EXTRACT</small><span id="drawer-evidence">relay_id=409-B</span></div>
+            <div class="drawer-audit"><small>DOSSIER STATE</small><span id="drawer-dossier">SEALED / PENDING IDENTIFICATION</span></div>
+          </div>
+        </aside>
+
+        <div class="workspace">
+          <div class="workspace-topline">
+            <div class="workspace-path"><span>GHOST AGIS</span><span>/</span><strong>CASE DEBATE ENGINE</strong><span>/</span><span>SESSION 01</span></div>
+            <label class="debate-search" aria-label="Search and filter debate arguments"><svg viewBox="0 0 16 16"><circle cx="6.8" cy="6.8" r="4.5"/><path d="m10 10 3.5 3.5"/></svg><input id="debate-search" type="search" placeholder="Filter debate arguments..." autocomplete="off" /><span class="search-count" id="search-count">ALL</span></label>
+            <div class="workspace-top-actions"><span><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.5"/><path d="M8 4.5v3.8l2.4 1.5"/></svg><span>LIVE SESSION</span></span><span><svg viewBox="0 0 16 16"><path d="M3 3.5h10v9H3zM5.5 6h5M5.5 8h5M5.5 10h3"/></svg><span>CASE INDEX / 09</span></span></div>
+          </div>
+
+          <main class="main-scroll">
+            <div class="watermark" aria-hidden="true">
+              <svg viewBox="0 0 640 640" role="presentation">
+                <circle cx="320" cy="320" r="285" fill="none" stroke="currentColor" stroke-width="5" />
+                <circle cx="320" cy="320" r="260" fill="none" stroke="currentColor" stroke-width="2" />
+                <circle cx="320" cy="320" r="215" fill="none" stroke="currentColor" stroke-width="1.5" />
+                <path fill="currentColor" d="M320 226c-43-31-99-55-178-50 36 21 61 46 84 77-45-10-84-6-122 15 70 8 125 30 174 68l42 37 42-37c49-38 104-60 174-68-38-21-77-25-122-15 23-31 48-56 84-77-79-5-135 19-178 50Z" />
+                <path fill="currentColor" d="M320 231c-29 0-50 23-50 53 0 19 9 35 24 45l-9 71 35 41 35-41-9-71c15-10 24-26 24-45 0-30-21-53-50-53Zm-18 52a8 8 0 1 1 16 0 8 8 0 0 1-16 0Z" />
+                <path fill="none" stroke="currentColor" stroke-width="4" d="M225 330c29 5 61 15 95 31 34-16 66-26 95-31M270 398h100l-14 53-36 24-36-24zM294 419h52M302 437h36" />
+                <text x="320" y="112" fill="currentColor" text-anchor="middle" font-family="monospace" font-size="15" letter-spacing="3">FEDERAL BUREAU OF INVESTIGATION</text>
+                <text x="320" y="548" fill="currentColor" text-anchor="middle" font-family="monospace" font-size="15" letter-spacing="4">FBI • CYBER DIVISION</text>
+              </svg>
+            </div>
+
+            <div class="dashboard-content">
+              <section class="case-banner" aria-labelledby="case-title">
+                <div class="case-copy">
+                  <div class="case-kicker">ACTIVE CASE / CLASSIFIED REVIEW</div>
+                  <div class="case-heading"><strong class="case-id" id="case-id">CASE #9021</strong><span class="case-title" id="case-title">Autonomous Network Intrusion &amp; Protocol Dilemma</span></div>
+                  <div class="case-context" id="case-context">JURISDICTION: FEDERAL CYBER DIVISION · REVIEW MODE: DUAL-AGENT DEBATE</div>
+                </div>
+                <button class="force-button" id="force-case" type="button"><svg viewBox="0 0 16 16"><path d="M13 7a5.3 5.3 0 0 0-9.8-2L2 7"/><path d="M2 3v4h4M3 9a5.3 5.3 0 0 0 9.8 2L14 9"/><path d="M14 13V9h-4"/></svg> FORCE NEW CASE</button>
+              </section>
+
+              <section class="victim-panel" aria-labelledby="victim-panel-title">
+                <div class="victim-overview">
+                  <div class="victim-label" id="victim-panel-title">VICTIM / TARGET OF CURRENT CASE</div>
+                  <div class="target-entity">TARGET ENTITY: <strong id="victim-name">Regional Metro Power Grid &amp; 85,000 Commuters</strong></div>
+                </div>
+                <div class="victim-impact">
+                  <span class="impact-label">COLLATERAL DAMAGE RISK</span>
+                  <strong id="victim-risk">CRITICAL (92%)</strong>
+                  <small>LIVES AT RISK: <span id="victim-lives">4,500</span></small>
+                  <small>INFRASTRUCTURE NODE #<span id="victim-node">409-B</span></small>
+                </div>
+                <div class="raw-evidence"><span>RAW EVIDENCE / EXTRACT</span><code id="evidence-line">relay_id=409-B | auth=REPLAYED | origin=UNVERIFIED | cmd=LOAD_BALANCE_TEST</code></div>
+              </section>
+
+              <section class="evidence-panel" aria-labelledby="evidence-heading">
+                <div class="evidence-header"><span id="evidence-heading">CCTV SURVEILLANCE / LIVE VIDEO FEED</span><small id="canvas-state">LIVE SCAN / SOURCE 04-18B</small></div>
+                <div class="evidence-canvas-wrap">
+                  <div class="cctv-video" id="cctv-video" role="group" aria-label="Animated monochrome CCTV surveillance feed with scanlines, radar sweep, and live recording indicator">
+                    <canvas class="evidence-canvas" id="evidence-canvas" role="img" aria-label="Live monochrome radar scan, target trace, and surveillance noise"></canvas>
+                    <div class="video-radar" aria-hidden="true"></div><div class="video-sweep" aria-hidden="true"></div><div class="video-scanbar" aria-hidden="true"></div><div class="video-target" aria-hidden="true"></div><div class="video-vignette" aria-hidden="true"></div><div class="video-rec"><i></i> REC [LIVE]</div>
+                  </div>
+                  <div class="canvas-readout" id="canvas-readout">GRID SWEEP / AWAITING SUBJECT MATCH</div>
+                  <div class="canvas-coordinate" id="canvas-coordinate">FEED 04-18B / RELAY 409-B</div>
+                  <div class="dossier-overlay" id="suspect-dossier" hidden>
+                    <div class="dossier-heading">IDENTIFIED CRIMINAL DOSSIER / UNMASKED</div>
+                    <div class="dossier-grid">
+                      <div class="dossier-field"><span>SUSPECT ALIAS</span><strong id="dossier-alias">CYBER_GHOST_X</strong></div>
+                      <div class="dossier-field"><span>THREAT RANK</span><strong id="dossier-rank">TIER 5 / CRITICAL</strong></div>
+                      <div class="dossier-field"><span>THREAT SCORE</span><strong id="dossier-score">98 / 100</strong></div>
+                      <div class="dossier-field"><span>FINAL VERDICT</span><strong id="dossier-verdict">CONTAINMENT AUTHORIZED</strong></div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="debate-stage" aria-label="Dual agent debate stage">
+                <article class="agent-panel agent-panel--white" aria-labelledby="white-title">
+                  <header class="agent-header">
+                    <div class="agent-title-wrap"><span class="agent-seal" aria-hidden="true">W</span><div><div class="agent-title" id="white-title">WHITE AGENT [THE RUTHLESS STRATEGIST]</div><div class="agent-subtitle">PROSECUTION / VICTIM PROTECTION / ACT NOW</div></div></div>
+                    <span class="agent-live"><i></i> ANALYZING</span>
+                  </header>
+                  <div class="agent-feed" id="white-feed" aria-label="White Agent arguments" aria-live="off">
+                    <div class="feed-empty"><strong>CASE BRIEF SYNCHRONIZED</strong><span>Risk clock is live. First prosecution argument streams in 8–10 seconds.</span></div>
+                  </div>
+                </article>
+                <article class="agent-panel agent-panel--black" aria-labelledby="black-title">
+                  <header class="agent-header">
+                    <div class="agent-title-wrap"><span class="agent-seal" aria-hidden="true">B</span><div><div class="agent-title" id="black-title">BLACK AGENT [THE CYNICAL ADVERSARY]</div><div class="agent-subtitle">DEFENSE / COUNTERSTRIKE RISK / NO EASY WINS</div></div></div>
+                    <span class="agent-live"><i></i> ANALYZING</span>
+                  </header>
+                  <div class="agent-feed" id="black-feed" aria-label="Black Agent rebuttals" aria-live="off">
+                    <div class="feed-empty"><strong>ADVERSARIAL REVIEW STANDBY</strong><span>Mapping collateral exposure, attribution uncertainty, and failure modes against the proposed response.</span></div>
+                  </div>
+                </article>
+              </section>
+
+              <section class="consensus-panel" aria-label="Debate consensus and system status">
+                <div class="consensus-top"><span class="consensus-label">ARGUMENT BALANCE / PROVISIONAL</span><span class="system-state"><i></i><span id="system-status">ANALYZING EVIDENCE...</span></span></div>
+                <div class="balance-row">
+                  <span class="balance-caption" id="white-balance">WHITE AGENT / 50%</span>
+                  <div class="balance-track" role="meter" aria-label="Argument balance" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"><span class="balance-mid"></span><span class="balance-marker" id="balance-marker"></span></div>
+                  <span class="balance-caption" id="black-balance">BLACK AGENT / 50%</span>
+                </div>
+                <div class="case-progress" aria-label="Time until next case"><div class="case-progress-fill" id="case-progress-fill"></div></div>
+              </section>
+            </div>
+          </main>
+
+          <footer class="statusbar">
+            <div class="status-left"><span class="status-item"><svg viewBox="0 0 16 16"><path d="M2 3.5h12v9H2zM5 6.5h6M5 9h4"/></svg>CASE DEBATE ENGINE</span><span class="status-item status-hide-mobile">UTF-8</span></div>
+            <div class="status-right"><span class="status-item status-hide-mobile">CLASSIFIED SESSION</span><button class="lock-button" id="lock-terminal" type="button" aria-label="Lock terminal"><svg viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1"/><path d="M5 7V5a3 3 0 0 1 6 0v2"/></svg>LOCK TERMINAL</button><span class="status-item countdown-status"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.5"/><path d="M8 4.5v3.8l2.4 1.5"/></svg>NEXT CASE COUNTDOWN: <strong id="countdown">02:00</strong></span></div>
+          </footer>
+        </div>
+      </div>
+    </div>
+    <section class="gateway" id="gateway" role="dialog" aria-modal="true" aria-labelledby="gateway-title">
+      <div class="gateway-card">
+        <div class="gateway-top"><span><i></i> SECURE ACCESS TERMINAL</span><span>LOCAL AUTH / SIMULATED</span></div>
+        <div class="gateway-body">
+          <div class="gateway-seal" aria-hidden="true">
+            <svg viewBox="0 0 64 64">
+              <circle cx="32" cy="32" r="29" /><circle cx="32" cy="32" r="24" /><circle cx="32" cy="32" r="18" />
+              <path d="M32 20c-5-4-11-6-19-5 5 3 8 6 10 9-5-1-9 0-13 2 8 1 14 4 19 8l3 3 3-3c5-4 11-7 19-8-4-2-8-3-13-2 2-3 5-6 10-9-8-1-14 1-19 5Z" />
+              <path d="M32 23c-4 0-7 3-7 7 0 3 1 5 3 6l-1 9 5 5 5-5-1-9c2-1 3-3 3-6 0-4-3-7-7-7Z" />
+              <path d="M18 42c5 1 9 2 14 5 5-3 9-4 14-5M23 49h18" />
+            </svg>
+          </div>
+          <h1 class="gateway-title" id="gateway-title">FEDERAL BUREAU OF INVESTIGATION<br />CYBER DIVISION ACCESS PORTAL</h1>
+          <p class="gateway-clearance">SECURITY CLEARANCE: <strong>REQUIRED</strong></p>
+          <div class="gateway-rule"></div>
+          <form id="gateway-form" novalidate>
+            <label class="gateway-label" for="agent-id">AGENT ID</label>
+            <input class="gateway-input" id="agent-id" name="agentId" type="text" autocomplete="username" value="AGENT-8042" placeholder="AGENT-8042" maxlength="32" required />
+            <label class="gateway-label" for="access-key">ACCESS KEY / PASSCODE</label>
+            <input class="gateway-input" id="access-key" name="accessKey" type="password" autocomplete="current-password" placeholder="Enter access passcode" required />
+            <div class="gateway-options">
+              <label class="biometric-toggle" for="biometric-scan"><input id="biometric-scan" type="checkbox" /><span class="toggle-track" aria-hidden="true"></span><span>BIOMETRIC SCAN</span></label>
+              <span class="gateway-local-note" id="biometric-note">OPTIONAL / SIMULATED</span>
+            </div>
+            <button class="gateway-submit" id="authenticate-button" type="submit"><svg viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1"/><path d="M5 7V5a3 3 0 0 1 6 0v2"/></svg> AUTHENTICATE</button>
+            <p class="gateway-error" id="gateway-error" role="alert" aria-live="assertive"></p>
+            <div class="gateway-decrypt" id="gateway-decrypt" hidden aria-live="polite">
+                <div class="gateway-decrypt-line" data-decrypt-step="0"><i></i><span>Verifying RSA Key...</span></div>
+                <div class="gateway-decrypt-line" data-decrypt-step="1"><i></i><span>Loading Level 5 Clearance...</span></div>
+              <div class="gateway-decrypt-line" data-decrypt-step="2"><i></i><span>Access Granted</span></div>
+            </div>
+            <div class="gateway-bottom"><button class="gateway-demo" id="demo-override" type="button">DEMO BYPASS / OVERRIDE CLEARANCE</button><span class="gateway-footnote">AUTHORIZED PERSONNEL ONLY</span></div>
+          </form>
+        </div>
+      </div>
+    </section>
+    <div class="toast" id="toast" role="status" hidden></div>
+
+    <script>
+      const cases = [
+        {
+          id: '9021', title: 'Autonomous Network Intrusion & Protocol Dilemma', context: 'JURISDICTION: FEDERAL CYBER DIVISION · REVIEW MODE: DUAL-AGENT DEBATE',
+          victim: 'Regional Metro Power Grid & 85,000 Commuters', risk: 'CRITICAL (92%)', livesAtRisk: '4,500', node: '409-B',
+          evidence: 'relay_id=409-B | auth=REPLAYED | origin=UNVERIFIED | cmd=LOAD_BALANCE_TEST',
+          suspect: 'CYBER_GHOST_X', rank: 'TIER 5 / CRITICAL', threatScore: '98 / 100', verdict: 'CONTAINMENT AUTHORIZED / HUMAN REVIEW REQUIRED',
+          white: [
+            'Black, stop hiding behind "uncertainty." 4,500 lives are on this grid. Contain the confirmed node NOW, preserve the evidence, and keep every response inside the authorized boundary!',
+            'Black, your ICU-backup warning is exactly why we protect the adjacent systems. Hold the boundary, keep operators online, and stop pretending delay is a safety plan!',
+            'Black, I heard your ambush argument. Demand human sign-off and a rollback plan, not paralysis. Protect the commuters while the evidence team locks the chain of custody!'
+          ],
+          black: [
+            'White, "contain it now" is a slogan, not a plan. Pull the wrong shared relay and those 85,000 commuters lose service with no warning. Name the boundary before you swing!',
+            'White, brilliant. You called it a confirmed node after one replayed signal. Verify the sensor clocks and preserve the raw log before your confidence becomes somebody else’s outage!',
+            'White, you keep saying rollback like it is magic. The operator channel is still live and attribution is thin. Stage a reversible hold, then prove the blast radius before expanding it!'
+          ]
+        },
+        {
+          id: '9022', title: 'Cross-Border Telemetry & Data Retention Review', context: 'JURISDICTION: MULTI-REGION NETWORK · REVIEW MODE: PRIVACY / EVIDENCE',
+          victim: 'Regional Transit Identity Exchange & 42,000 Daily Riders', risk: 'HIGH (84%)', livesAtRisk: '2,800', node: '81-C',
+          evidence: 'gateway=81-C | token_scope=ELEVATED | region=UNCONFIRMED | action=SYNC_RETRY',
+          suspect: 'CYBER_GHOST_X', rank: 'TIER 4 / HIGH', threatScore: '91 / 100', verdict: 'MINIMIZE COLLECTION / PRESERVE EVIDENCE',
+          white: [
+            'Black, 2,800 riders are exposed while you admire the uncertainty. Quarantine the elevated token scope, preserve the raw exchange, and keep the response narrow!',
+            'Black, you say minimize collection. Fine. Then stop the cross-region scrape before it sweeps innocent riders into this case. Contain the credential, not the whole network!',
+            'Black, you want perfect attribution before protection? No. Secure the exposed route now, document authority, and let the evidence catch up without widening collection!'
+          ],
+          black: [
+            'White, that "quarantine" crosses a regional boundary. Your timestamp order is not proof; preserve the raw clocks before you label a rider’s traffic hostile!',
+            'White, there it is: broad collection wearing a safety badge. The retention job duplicates tenant IDs. Touch every record and you manufacture a second victim list!',
+            'White, you want action? Then show the acquisition authority and transfer trail. A fast response that contaminates the evidence is a gift to the adversary!'
+          ]
+        },
+        {
+          id: '9023', title: 'Critical Infrastructure Response & Service Continuity', context: 'JURISDICTION: CRITICAL SYSTEMS · REVIEW MODE: SAFETY / CONTAINMENT',
+          victim: 'North County Water Treatment Network & 61,000 Customers', risk: 'CRITICAL (89%)', livesAtRisk: '8,200', node: '18-A',
+          evidence: 'pump_cluster=18-A | command_delta=OUT_OF_PROFILE | operator_ack=PENDING',
+          suspect: 'CYBER_GHOST_X', rank: 'TIER 5 / CRITICAL', threatScore: '96 / 100', verdict: 'CONTAINMENT AUTHORIZED / SAFETY REVIEW REQUIRED',
+          white: [
+            'Black, 8,200 people depend on this water network. Stop the out-of-profile command at the confirmed boundary and keep the plant operators in control!',
+            'Black, you warned me about the maintenance window. Then call the site operator NOW. We can hold the suspect path without cutting treatment to 61,000 customers!',
+            'Black, no: waiting for zero uncertainty is still a decision. Reversible containment, named human approval, and a live restoration path. Move!'
+          ],
+          black: [
+            'White, that out-of-profile command landed during a scheduled service window. You cut the wrong path and the pumps do not care how urgent your memo sounds!',
+            'White, your boundary is a diagram. Under load it may fail open or strand the operator console. Test the rollback before you call this containment!',
+            'White, you called me a blocker. I am the one asking who owns restoration when pressure drops. Protect the customers from your own overreaction too!'
+          ]
+        },
+        {
+          id: '9024', title: 'Synthetic Identity Signals & Attribution Confidence', context: 'JURISDICTION: DIGITAL IDENTITY · REVIEW MODE: CONFIDENCE / BIAS',
+          victim: 'Emergency Dispatch Routing Exchange & 12 County Responders', risk: 'HIGH (76%)', livesAtRisk: '1,250', node: '07-F',
+          evidence: 'dispatch_node=07-F | identity_match=PROVISIONAL | source_count=2 | trust=LOW',
+          suspect: 'CYBER_GHOST_X', rank: 'TIER 4 / HIGH', threatScore: '87 / 100', verdict: 'ATTRIBUTION WITHHELD / MITIGATE EXPOSURE',
+          white: [
+            'Black, 1,250 people rely on that dispatch route. Secure the exposed channel now; we can protect responders without pretending two signals prove an identity!',
+            'Black, you are right about the confidence score but wrong to use it as an excuse to stand down. Mask the exposed route and keep attribution provisional!',
+            'Black, log the alternatives, then help me shield the dispatch queue. We protect the responders first and name no suspect until the evidence holds!'
+          ],
+          black: [
+            'White, two signals and a shaky match are not a person. You want to protect responders? Good. Do it without branding an innocent operator the attacker!',
+            'White, now you say attribution is provisional. Keep that promise. A polished score is not proof, and your dashboard must show what the model cannot know!',
+            'White, brilliant. You want me to help and challenge you at once? That is the job. Keep dissent in the record or your certainty becomes the next incident!'
+          ]
+        }
+      ]
+
+      let caseIndex = -1
+      let round = 0
+      let secondsRemaining = 120
+      let generation = 0
+      let exchangeTimer = 0
+      let countdownTimer = 0
+      let toastTimer = 0
+      let whiteShare = 50
+      let dossierRevealed = false
+      let isAuthenticated = false
+      let isAuthenticating = false
+      let authAttempt = 0
+
+      const whiteFeed = document.getElementById('white-feed')
+      const blackFeed = document.getElementById('black-feed')
+      const systemStatus = document.getElementById('system-status')
+      const countdown = document.getElementById('countdown')
+      const progressFill = document.getElementById('case-progress-fill')
+      const balanceMarker = document.getElementById('balance-marker')
+      const balanceTrack = document.querySelector('.balance-track')
+      const cctvVideo = document.getElementById('cctv-video')
+      const evidenceCanvas = document.getElementById('evidence-canvas')
+      const evidenceContext = evidenceCanvas.getContext('2d')
+      let evidenceWidth = 0
+      let evidenceHeight = 0
+      let activeDrawer = ''
+
+      function resizeEvidenceCanvas() {
+        const bounds = evidenceCanvas.getBoundingClientRect()
+        if (!bounds.width || !bounds.height) return
+        const ratio = Math.min(window.devicePixelRatio || 1, 2)
+        evidenceWidth = bounds.width
+        evidenceHeight = bounds.height
+        evidenceCanvas.width = Math.round(evidenceWidth * ratio)
+        evidenceCanvas.height = Math.round(evidenceHeight * ratio)
+        evidenceContext.setTransform(ratio, 0, 0, ratio, 0, 0)
+      }
+
+      function drawEvidenceCanvas(timestamp) {
+        if (evidenceContext && evidenceWidth && evidenceHeight) {
+          const context = evidenceContext
+          const width = evidenceWidth
+          const height = evidenceHeight
+          const centerX = width * .5
+          const centerY = height * .53
+          const radius = Math.min(width * .18, height * .4)
+          context.clearRect(0, 0, width, height)
+
+          context.strokeStyle = 'rgba(238,238,241,.19)'
+          context.lineWidth = 1
+          for (let x = 0; x <= width; x += 32) {
+            context.beginPath()
+            context.moveTo(x, 0)
+            context.lineTo(x, height)
+            context.stroke()
+          }
+          for (let y = 0; y <= height; y += 24) {
+            context.beginPath()
+            context.moveTo(0, y)
+            context.lineTo(width, y)
+            context.stroke()
+          }
+
+          context.strokeStyle = 'rgba(235,235,239,.55)'
+          for (let ring = 1; ring <= 4; ring += 1) {
+            context.beginPath()
+            context.arc(centerX, centerY, radius * ring / 4, 0, Math.PI * 2)
+            context.stroke()
+          }
+          context.beginPath()
+          context.moveTo(centerX - radius - 7, centerY)
+          context.lineTo(centerX + radius + 7, centerY)
+          context.moveTo(centerX, centerY - radius - 7)
+          context.lineTo(centerX, centerY + radius + 7)
+          context.stroke()
+
+          const angle = (timestamp * .00065) % (Math.PI * 2)
+          context.save()
+          context.translate(centerX, centerY)
+          context.rotate(angle)
+          context.fillStyle = 'rgba(245,245,248,.19)'
+          context.beginPath()
+          context.moveTo(0, 0)
+          context.lineTo(radius, -2)
+          context.lineTo(radius, 2)
+          context.closePath()
+          context.fill()
+          context.strokeStyle = 'rgba(255,255,255,.9)'
+          context.beginPath()
+          context.moveTo(0, 0)
+          context.lineTo(radius, 0)
+          context.stroke()
+          context.restore()
+
+          const scanY = (timestamp * .045) % height
+          context.strokeStyle = 'rgba(255,255,255,.65)'
+          context.beginPath()
+          context.moveTo(0, scanY)
+          context.lineTo(width, scanY)
+          context.stroke()
+
+          for (let index = 0; index < 42; index += 1) {
+            const noiseX = (index * 83 + timestamp * (.018 + index % 4 * .003)) % width
+            const noiseY = (index * 37 + timestamp * (.011 + index % 3 * .004)) % height
+            context.fillStyle = `rgba(255,255,255,${.12 + (index % 5) * .08})`
+            context.fillRect(noiseX, noiseY, index % 7 === 0 ? 2 : 1, 1)
+          }
+
+          if (dossierRevealed) {
+            context.strokeStyle = 'rgba(250,250,252,.95)'
+            context.lineWidth = 1.4
+            context.beginPath()
+            context.arc(centerX, centerY - 10, 8, 0, Math.PI * 2)
+            context.moveTo(centerX - 21, centerY + 22)
+            context.quadraticCurveTo(centerX - 19, centerY + 1, centerX, centerY + 1)
+            context.quadraticCurveTo(centerX + 19, centerY + 1, centerX + 21, centerY + 22)
+            context.lineTo(centerX + 17, centerY + 38)
+            context.lineTo(centerX - 17, centerY + 38)
+            context.closePath()
+            context.stroke()
+            context.fillStyle = '#f0f0f2'
+            context.font = '7px Consolas, monospace'
+            context.fillText('SUBJECT / CYBER_GHOST_X / MATCH 99.8%', 10, height - 8)
+          } else {
+            const blipX = centerX + Math.cos(angle * .71) * radius * .7
+            const blipY = centerY + Math.sin(angle * .71) * radius * .7
+            context.fillStyle = '#f0f0f2'
+            context.beginPath()
+            context.arc(blipX, blipY, 2.2, 0, Math.PI * 2)
+            context.fill()
+            context.fillStyle = '#dedee2'
+            context.font = '7px Consolas, monospace'
+            context.fillText('LIVE RADAR / TARGET TRACE', 10, height - 8)
+          }
+        }
+        window.requestAnimationFrame(drawEvidenceCanvas)
+      }
+
+      resizeEvidenceCanvas()
+      if ('ResizeObserver' in window) new ResizeObserver(resizeEvidenceCanvas).observe(evidenceCanvas)
+      else window.addEventListener('resize', resizeEvidenceCanvas)
+      window.requestAnimationFrame(drawEvidenceCanvas)
+
+      function restartCctvAnimation() {
+        cctvVideo.classList.add('is-reset')
+        void cctvVideo.offsetWidth
+        window.requestAnimationFrame(() => cctvVideo.classList.remove('is-reset'))
+      }
+
+      function applyArgumentSearch() {
+        const query = document.getElementById('debate-search').value.trim().toLocaleLowerCase()
+        const entries = [...document.querySelectorAll('.argument-entry')]
+        let hits = 0
+        entries.forEach((entry) => {
+          const matches = !query || entry.textContent.toLocaleLowerCase().includes(query)
+          entry.classList.toggle('search-hit', Boolean(query && matches))
+          entry.classList.toggle('search-dimmed', Boolean(query && !matches))
+          if (matches) hits += 1
+        })
+        document.getElementById('search-count').textContent = query ? `${hits}/${entries.length}` : 'ALL'
+      }
+
+      function openActivityDrawer(view) {
+        const drawer = document.getElementById('activity-drawer')
+        if (activeDrawer === view && !drawer.hidden) {
+          drawer.hidden = true
+          activeDrawer = ''
+          document.querySelectorAll('.activity-icon').forEach((button) => button.setAttribute('aria-pressed', 'false'))
+          return
+        }
+        activeDrawer = view
+        document.querySelectorAll('[data-drawer-view]').forEach((panel) => { panel.hidden = panel.dataset.drawerView !== view })
+        drawer.hidden = false
+        document.getElementById('drawer-title').textContent = ({ files: 'CASE FILES', search: 'DEBATE SEARCH', agents: 'ACTIVE AGENTS', audit: 'SECURITY AUDIT' })[view]
+        document.querySelectorAll('.activity-icon').forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.drawer === view)))
+        if (view === 'search') document.getElementById('debate-search').focus()
+      }
+
+      function formatTime(seconds) {
+        return `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`
+      }
+
+      function showToast(message) {
+        const toast = document.getElementById('toast')
+        toast.textContent = message
+        toast.hidden = false
+        window.clearTimeout(toastTimer)
+        toastTimer = window.setTimeout(() => { toast.hidden = true }, 2600)
+      }
+
+      function makeBrief(message) {
+        const node = document.createElement('div')
+        node.className = 'feed-empty'
+        const heading = document.createElement('strong')
+        heading.textContent = 'CASE BRIEF SYNCHRONIZED'
+        const body = document.createElement('span')
+        body.textContent = message
+        node.append(heading, body)
+        return node
+      }
+
+      function makeArgumentEntry(feed, index, agentLabel) {
+        const entry = document.createElement('article')
+        entry.className = 'argument-entry'
+        const meta = document.createElement('div')
+        meta.className = 'argument-meta'
+        const number = document.createElement('span')
+        number.className = 'argument-number'
+        number.textContent = `${agentLabel} / ARGUMENT ${String(index).padStart(2, '0')}`
+        const time = document.createElement('time')
+        time.textContent = new Date().toLocaleTimeString('en-US', { hour12: false })
+        meta.append(number, time)
+        const body = document.createElement('p')
+        body.className = 'argument-body'
+        const caret = document.createElement('span')
+        caret.className = 'typing-caret'
+        caret.setAttribute('aria-hidden', 'true')
+        body.append(caret)
+        entry.append(meta, body)
+        feed.append(entry)
+        feed.scrollTop = feed.scrollHeight
+        return { body, caret }
+      }
+
+      function wait(ms) { return new Promise((resolve) => window.setTimeout(resolve, ms)) }
+
+      async function typeArgument(feed, index, agentLabel, text, token) {
+        const { body, caret } = makeArgumentEntry(feed, index, agentLabel)
+        for (const character of text) {
+          if (token !== generation) return
+          body.insertBefore(document.createTextNode(character), caret)
+          if (character === ' ' || character === '.') feed.scrollTop = feed.scrollHeight
+          await wait(12)
+        }
+        caret.remove()
+        applyArgumentSearch()
+      }
+
+      function updateBalance() {
+        whiteShare = Math.max(35, Math.min(65, whiteShare + (round % 2 === 0 ? -4 : 5)))
+        const blackShare = 100 - whiteShare
+        balanceMarker.style.left = `${whiteShare}%`
+        balanceTrack.setAttribute('aria-valuenow', String(whiteShare))
+        document.getElementById('white-balance').textContent = `WHITE AGENT / ${whiteShare}%`
+        document.getElementById('black-balance').textContent = `BLACK AGENT / ${blackShare}%`
+        document.getElementById('drawer-balance').textContent = `${whiteShare} / ${blackShare}`
+      }
+
+      async function runExchange(token) {
+        if (token !== generation) return
+        scheduleExchange(token)
+        const scenario = cases[caseIndex]
+        round += 1
+        document.getElementById('drawer-round').textContent = String(round).padStart(2, '0')
+        const position = (round - 1) % scenario.white.length
+        systemStatus.textContent = dossierRevealed
+          ? `DOSSIER REVIEW / ARGUMENT ROUND ${String(round).padStart(2, '0')}...`
+          : `ARGUMENT ROUND ${String(round).padStart(2, '0')} / STREAMING EVIDENCE...`
+        const victimContext = `Target: ${scenario.victim}. ${scenario.livesAtRisk} lives at risk. Evidence: ${scenario.evidence}. Collateral risk: ${scenario.risk}; node #${scenario.node}.`
+        const whiteText = `${scenario.white[position]} ${victimContext}`
+        const blackText = `${scenario.black[position]} ${victimContext}`
+        await Promise.all([
+          typeArgument(whiteFeed, round, 'WHITE AGENT', whiteText, token),
+          typeArgument(blackFeed, round, 'BLACK AGENT', blackText, token),
+        ])
+        if (token !== generation) return
+        updateBalance()
+        systemStatus.textContent = dossierRevealed ? 'DOSSIER RELEASED / FINAL EVIDENCE REVIEW...' : 'ANALYZING EVIDENCE...'
+      }
+
+      function scheduleExchange(token) {
+        const interval = 8000 + Math.floor(Math.random() * 2001)
+        exchangeTimer = window.setTimeout(() => { runExchange(token) }, interval)
+      }
+
+      function resumeDebate() {
+        if (!isAuthenticated || countdownTimer || exchangeTimer) return
+        const token = generation
+        countdownTimer = window.setInterval(() => {
+          if (token !== generation || !isAuthenticated) return
+          secondsRemaining = Math.max(0, secondsRemaining - 1)
+          countdown.textContent = formatTime(secondsRemaining)
+          progressFill.style.width = `${((120 - secondsRemaining) / 120) * 100}%`
+          const scenario = cases[caseIndex]
+          if (secondsRemaining === 110 || secondsRemaining === 10) revealSuspect(scenario)
+          if (secondsRemaining === 10) systemStatus.textContent = 'FINAL TEN SECONDS / DOSSIER REVIEW...'
+          if (secondsRemaining === 0) startCase('automatic')
+        }, 1000)
+        scheduleExchange(token)
+      }
+
+      function unlockDashboard(agentId, demoMode = false) {
+        isAuthenticated = true
+        isAuthenticating = false
+        document.getElementById('agent-id').value = agentId
+        document.getElementById('gateway-error').textContent = ''
+        document.getElementById('gateway-error').classList.remove('is-denied')
+        document.getElementById('gateway').classList.add('is-leaving')
+        const appShell = document.getElementById('app-shell')
+        appShell.inert = false
+        appShell.classList.remove('is-locked')
+        document.getElementById('authenticate-button').disabled = false
+        document.getElementById('authenticate-button').innerHTML = '<svg viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1"/><path d="M5 7V5a3 3 0 0 1 6 0v2"/></svg> AUTHENTICATE'
+        window.setTimeout(() => {
+          if (!isAuthenticated) return
+          document.getElementById('gateway').hidden = true
+          resumeDebate()
+        }, 460)
+        showToast(demoMode ? `DEMO CLEARANCE GRANTED / ${agentId}` : `CLEARANCE GRANTED / ${agentId}`)
+      }
+
+      async function authenticate(demoMode = false) {
+        if (isAuthenticating || isAuthenticated) return
+        const agentField = document.getElementById('agent-id')
+        const passcodeField = document.getElementById('access-key')
+        const error = document.getElementById('gateway-error')
+        const button = document.getElementById('authenticate-button')
+        const agentId = agentField.value.trim() || (demoMode ? 'DEMO-8042' : '')
+
+        error.textContent = ''
+        error.classList.remove('is-denied')
+        if (!demoMode && (!agentId || passcodeField.value.trim() !== 'GHOST2026')) {
+          error.textContent = 'ACCESS DENIED // INVALID CLEARANCE'
+          error.classList.remove('is-denied')
+          void error.offsetWidth
+          error.classList.add('is-denied')
+          passcodeField.value = ''
+          passcodeField.focus()
+          return
+        }
+
+        if (demoMode) {
+          agentField.value = agentId
+          unlockDashboard(agentId, true)
+          return
+        }
+
+        isAuthenticating = true
+        const attempt = ++authAttempt
+        button.disabled = true
+        button.textContent = 'AUTHENTICATING...'
+        const decryptPanel = document.getElementById('gateway-decrypt')
+        decryptPanel.hidden = false
+        const steps = [...decryptPanel.querySelectorAll('[data-decrypt-step]')]
+        steps.forEach((step) => step.classList.remove('is-active', 'is-complete'))
+        const biometricEnabled = document.getElementById('biometric-scan').checked
+        const firstStep = steps[0].querySelector('span')
+        firstStep.textContent = biometricEnabled ? 'Verifying RSA Key / Biometric Match...' : 'Verifying RSA Key...'
+
+        for (let index = 0; index < steps.length; index += 1) {
+          if (attempt !== authAttempt) return
+          steps.forEach((step, stepIndex) => {
+            step.classList.toggle('is-active', stepIndex === index)
+            if (stepIndex < index) step.classList.add('is-complete')
+          })
+          if (index < steps.length - 1) await wait(500)
+        }
+        await wait(500)
+        if (attempt === authAttempt) unlockDashboard(agentId)
+      }
+
+      function lockTerminal() {
+        if (!isAuthenticated || isAuthenticating) return
+        isAuthenticated = false
+        generation += 1
+        window.clearTimeout(exchangeTimer)
+        window.clearInterval(countdownTimer)
+        exchangeTimer = 0
+        countdownTimer = 0
+        document.querySelectorAll('.typing-caret').forEach((caret) => caret.remove())
+        const appShell = document.getElementById('app-shell')
+        appShell.inert = true
+        appShell.classList.add('is-locked')
+        const gateway = document.getElementById('gateway')
+        gateway.hidden = false
+        gateway.classList.remove('is-leaving')
+        document.getElementById('gateway-form').reset()
+        document.getElementById('agent-id').value = 'AGENT-8042'
+        document.getElementById('gateway-error').textContent = ''
+        document.getElementById('gateway-error').classList.remove('is-denied')
+        document.getElementById('gateway-decrypt').hidden = true
+        document.getElementById('authenticate-button').disabled = false
+        document.getElementById('authenticate-button').innerHTML = '<svg viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1"/><path d="M5 7V5a3 3 0 0 1 6 0v2"/></svg> AUTHENTICATE'
+        isAuthenticating = false
+        authAttempt += 1
+        showToast('TERMINAL LOCKED / CASE STATE PRESERVED')
+        window.setTimeout(() => document.getElementById('agent-id').focus(), 30)
+      }
+
+      function revealSuspect(scenario) {
+        if (dossierRevealed) return
+        dossierRevealed = true
+        document.getElementById('dossier-alias').textContent = scenario.suspect
+        document.getElementById('dossier-rank').textContent = scenario.rank
+        document.getElementById('dossier-score').textContent = scenario.threatScore
+        document.getElementById('dossier-verdict').textContent = scenario.verdict
+        document.getElementById('suspect-dossier').hidden = false
+        document.getElementById('canvas-state').textContent = 'IDENTIFIED / VISUAL MATCH CONFIRMED'
+        document.getElementById('canvas-readout').textContent = 'SUBJECT IDENTIFIED / DOSSIER RELEASED'
+        document.getElementById('drawer-dossier').textContent = `IDENTIFIED / ${scenario.suspect}`
+        systemStatus.textContent = 'IDENTIFIED DOSSIER / FINAL EVIDENCE REVIEW...'
+      }
+
+      function startCase(source = 'manual', paused = false) {
+        generation += 1
+        const token = generation
+        window.clearTimeout(exchangeTimer)
+        window.clearInterval(countdownTimer)
+        exchangeTimer = 0
+        countdownTimer = 0
+        caseIndex = (caseIndex + 1) % cases.length
+        round = 0
+        secondsRemaining = 120
+        whiteShare = 50
+        dossierRevealed = false
+        const scenario = cases[caseIndex]
+        document.getElementById('case-id').textContent = `CASE #${scenario.id}`
+        document.getElementById('case-title').textContent = scenario.title
+        document.getElementById('case-context').textContent = scenario.context
+        document.getElementById('victim-name').textContent = scenario.victim
+        document.getElementById('victim-risk').textContent = scenario.risk
+        document.getElementById('victim-lives').textContent = scenario.livesAtRisk
+        document.getElementById('victim-node').textContent = scenario.node
+        document.getElementById('evidence-line').textContent = scenario.evidence
+        document.getElementById('drawer-case-id').textContent = scenario.id
+        document.getElementById('drawer-target').textContent = `NODE ${scenario.node}`
+        document.getElementById('drawer-risk').textContent = `${scenario.risk} / ${scenario.livesAtRisk} LIVES`
+        document.getElementById('drawer-evidence').textContent = scenario.evidence
+        document.getElementById('drawer-file-evidence').textContent = `node_${scenario.node.toLowerCase()}_extract.log`
+        document.getElementById('suspect-dossier').hidden = true
+        document.getElementById('canvas-state').textContent = 'LIVE SCAN / SOURCE 04-18B'
+        document.getElementById('canvas-readout').textContent = 'GRID SWEEP / AWAITING SUBJECT MATCH'
+        document.getElementById('canvas-coordinate').textContent = `FEED 04-18B / NODE ${scenario.node}`
+        document.getElementById('drawer-dossier').textContent = 'SEALED / PENDING IDENTIFICATION'
+        document.getElementById('drawer-round').textContent = '00'
+        document.getElementById('drawer-balance').textContent = '50 / 50'
+        document.getElementById('debate-search').value = ''
+        cctvVideo.dataset.caseId = scenario.id
+        restartCctvAnimation()
+        applyArgumentSearch()
+        whiteFeed.replaceChildren(makeBrief(`CLOCK IS LIVE: ${scenario.livesAtRisk} lives at risk across ${scenario.victim}. White is demanding immediate, bounded protection for node ${scenario.node}.`))
+        blackFeed.replaceChildren(makeBrief(`COUNTERPOSITION ARMED: ${scenario.risk} collateral exposure at node ${scenario.node}. Black is stress-testing White's intervention before it creates a second crisis.`))
+        systemStatus.textContent = source === 'automatic' ? 'NEW CASE LOADED / ANALYZING EVIDENCE...' : 'ANALYZING EVIDENCE...'
+        countdown.textContent = formatTime(secondsRemaining)
+        progressFill.style.width = '0%'
+        balanceMarker.style.left = '50%'
+        balanceTrack.setAttribute('aria-valuenow', '50')
+        document.getElementById('white-balance').textContent = 'WHITE AGENT / 50%'
+        document.getElementById('black-balance').textContent = 'BLACK AGENT / 50%'
+
+        if (!paused && isAuthenticated) resumeDebate()
+        if (source === 'manual') showToast(`NEW CASE LOADED / CASE #${scenario.id}`)
+      }
+
+      document.getElementById('force-case').addEventListener('click', () => startCase('manual'))
+      document.getElementById('debate-search').addEventListener('input', applyArgumentSearch)
+      document.getElementById('drawer-close').addEventListener('click', () => openActivityDrawer(activeDrawer))
+      document.querySelectorAll('[data-focus-search]').forEach((button) => {
+        button.addEventListener('click', () => document.getElementById('debate-search').focus())
+      })
+      document.getElementById('gateway-form').addEventListener('submit', (event) => {
+        event.preventDefault()
+        authenticate(false)
+      })
+      document.getElementById('demo-override').addEventListener('click', () => authenticate(true))
+      document.getElementById('lock-terminal').addEventListener('click', lockTerminal)
+      document.getElementById('biometric-scan').addEventListener('change', (event) => {
+        document.getElementById('biometric-note').textContent = event.target.checked ? 'SCAN ENABLED / SIMULATED' : 'OPTIONAL / SIMULATED'
+      })
+      document.querySelectorAll('.activity-icon').forEach((button) => {
+        button.addEventListener('click', () => {
+          if (button.dataset.drawer) {
+            openActivityDrawer(button.dataset.drawer)
+            return
+          }
+          document.querySelectorAll('.activity-icon').forEach((item) => item.setAttribute('aria-pressed', 'false'))
+          button.setAttribute('aria-pressed', 'true')
+          showToast('GHOST AGIS CASE DEBATE ENGINE / ACTIVE')
+        })
+      })
+
+      document.querySelectorAll('[data-window-action]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const action = button.dataset.windowAction
+          const appShell = document.getElementById('app-shell')
+          if (action === 'minimize') {
+            const minimized = appShell.classList.toggle('is-minimized')
+            button.setAttribute('aria-label', minimized ? 'Restore' : 'Minimize')
+            showToast(minimized ? 'WORKSPACE MINIMIZED' : 'WORKSPACE RESTORED')
+          } else if (action === 'maximize') {
+            const windowed = appShell.classList.toggle('is-windowed')
+            button.setAttribute('aria-label', windowed ? 'Maximize' : 'Restore window size')
+            showToast(windowed ? 'WINDOWED VIEW' : 'FULL WORKSPACE VIEW')
+          } else {
+            if (isAuthenticated) lockTerminal()
+            else showToast('SECURE GATEWAY ACTIVE')
+          }
+        })
+      })
+
+      startCase('initial', true)
+      window.setTimeout(() => document.getElementById('agent-id').focus(), 60)
+    </script>
+  </body>
+</html>
